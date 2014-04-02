@@ -122,6 +122,9 @@ void assert_false(int real, const char* caller, int line);
 void assert_fail(const char* caller, int line);
 #define ASSERT_FAIL() assert_fail(__FILE__, __LINE__)
 
+void assert_fail_msg(const char* msg, const char* caller, int line);
+#define ASSERT_FAIL_MSG(msg) assert_fail_msg(msg,__FILE__, __LINE__)
+
 #ifdef CTEST_MAIN
 
 #include <setjmp.h>
@@ -291,6 +294,11 @@ void assert_false(int real, const char* caller, int line) {
 
 void assert_fail(const char* caller, int line) {
     CTEST_ERR("%s:%d  shouldn't come here", caller, line);
+    longjmp(ctest_err, 1);
+}
+
+void assert_fail_msg(const char* msg, const char* caller, int line) {
+    CTEST_ERR("%s:%d  %s", caller, line, msg);
     longjmp(ctest_err, 1);
 }
 
